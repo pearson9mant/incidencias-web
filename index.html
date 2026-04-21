@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Formulario Incidencias Pearson</title>
+<title>Formulario Incidencias-Abat Oliba</title>
 
 <style>
     body {
@@ -51,6 +51,7 @@
         font-size: 22px;
         font-weight: bold;
         margin-top: 30px;
+        cursor: pointer;
     }
 
     button:active {
@@ -61,9 +62,8 @@
 
 <body>
 
-<h2>Incidencias – Pearson</h2>
+<h2>Incidencias – Abat Oliba</h2>
 
-<!-- CENTRO -->
 <label>Centro</label>
 <select id="centro">
     <option value="">Seleccionar centro...</option>
@@ -71,13 +71,11 @@
     <option value="Pearson 22">Pearson 22</option>
 </select>
 
-<!-- EDIFICIO -->
 <label>Edificio</label>
 <select id="edificio" onchange="cargarAulas()">
     <option value="">Seleccionar edificio...</option>
 </select>
 
-<!-- AULA -->
 <label>Aula / Espacio</label>
 <select id="aula" onchange="mostrarOtro()">
     <option value="">Seleccione un edificio...</option>
@@ -85,11 +83,9 @@
 
 <input type="text" id="aula_otro" placeholder="Escribe el aula/espacio" style="display:none; margin-top:10px;">
 
-<!-- INCIDENCIA -->
 <label>Incidencia</label>
 <textarea id="incidencia" rows="4" placeholder="Describe la incidencia"></textarea>
 
-<!-- PRIORIDAD -->
 <label>Prioridad</label>
 <select id="prioridad">
     <option value="Baja">Baja</option>
@@ -98,21 +94,19 @@
     <option value="Urgente">Urgente</option>
 </select>
 
-<!-- SOLICITANTE -->
 <label>Nombre del solicitante</label>
 <input type="text" id="profe" placeholder="Nombre del solicitante">
 
-<button onclick="enviarCorreo()">ENVIAR</button>
+<button type="button" onclick="enviarCorreo()">ENVIAR</button>
 
 <script>
-
 // ====================
 // LISTAS DE AULAS
 // ====================
 
 // Pearson 22 – Infantil
 const aulasInfantil = [
-"P3A","P3B","P3C","P4A","P4B","P4C","P5A","P5B","P5C",
+"I3A","I3B","I3C","I4A","I4B","I4C","I5A","I5B","I5C",
 "1A","1B","1C","2A","2B","2C","3A","3B","3C","4A","4B","4C",
 "5A","5B","5C","6A","6B","6C",
 "Secretaría","WC Profes","Comedor niños","Comedor profes","Vestíbulo",
@@ -132,7 +126,7 @@ const aulasInfantil = [
 
 // Pearson 22 – Llar
 const aulasLlar = [
-"P1A","P1B","P1C","P2A","P2B","P2C",
+"I1A","I1B","I1C","I2A","I2B","I2C",
 "Sala polivalente","WC 1ª planta","WC 2ª planta",
 "Secretaría","Sala profes","Pasillo 1ª planta","Pasillo 2ª planta","Servidor",
 "Otro"
@@ -170,7 +164,7 @@ const edificiosPorCentro = {
     ],
 
     "Pearson 22": [
-        { value: "Infantil", text: "Edif. Infantil" },
+        { value: "Infantil", text: "Edif. Infantil/Primaria" },
         { value: "Llar", text: "Edif. Llar (Anexo)" }
     ]
 };
@@ -180,7 +174,6 @@ const edificiosPorCentro = {
 // ====================
 
 document.getElementById("centro").addEventListener("change", function () {
-
     const centro = this.value;
     const edificioSelect = document.getElementById("edificio");
 
@@ -196,6 +189,8 @@ document.getElementById("centro").addEventListener("change", function () {
     }
 
     document.getElementById("aula").innerHTML = '<option value="">Seleccione un edificio...</option>';
+    document.getElementById("aula_otro").style.display = "none";
+    document.getElementById("aula_otro").value = "";
 });
 
 // ====================
@@ -203,8 +198,8 @@ document.getElementById("centro").addEventListener("change", function () {
 // ====================
 
 function cargarAulas() {
-    const edificio = document.getElementById('edificio').value;
-    const aulaSelect = document.getElementById('aula');
+    const edificio = document.getElementById("edificio").value;
+    const aulaSelect = document.getElementById("aula");
 
     aulaSelect.innerHTML = "";
 
@@ -217,12 +212,19 @@ function cargarAulas() {
     if (edificio === "Edif. B") lista = aulasB;
     if (edificio === "Edif. C") lista = aulasC;
 
+    if (lista.length === 0) {
+        aulaSelect.innerHTML = '<option value="">Seleccione un edificio...</option>';
+        return;
+    }
+
     lista.forEach(a => {
         const opt = document.createElement("option");
         opt.value = a;
         opt.textContent = a;
         aulaSelect.appendChild(opt);
     });
+
+    mostrarOtro();
 }
 
 function mostrarOtro() {
@@ -242,33 +244,37 @@ function mostrarOtro() {
 // ====================
 
 function enviarCorreo() {
+    const centro = document.getElementById("centro").value;
+    const edificio = document.getElementById("edificio").value;
 
-    const centro = document.getElementById('centro').value;
-    const edificio = document.getElementById('edificio').value;
+    let aula = document.getElementById("aula").value;
+    const aula_otro = document.getElementById("aula_otro").value.trim();
 
-    let aula = document.getElementById('aula').value;
-    const aula_otro = document.getElementById('aula_otro').value;
-
-    if (aula === "Otro" && aula_otro.trim() !== "") {
+    if (aula === "Otro" && aula_otro !== "") {
         aula = aula_otro;
     }
 
-    const incidencia = document.getElementById('incidencia').value;
-    const prioridad = document.getElementById('prioridad').value;
-    const profe = document.getElementById('profe').value;
+    const incidencia = document.getElementById("incidencia").value.trim();
+    const prioridad = document.getElementById("prioridad").value;
+    const profe = document.getElementById("profe").value.trim();
 
-    const body =
-`Centro: ${centro}%0D%0A
-Edificio: ${edificio}%0D%0A
-Aula/Espacio: ${aula}%0D%0A
-Incidencia: ${incidencia}%0D%0A
-Prioridad: ${prioridad}%0D%0A
-Solicitante: ${profe}`;
+    if (!centro || !edificio || !aula || !incidencia || !profe) {
+        alert("Por favor, completa todos los campos obligatorios.");
+        return;
+    }
+
+    const body = encodeURIComponent(
+`Centro: ${centro}
+Edificio: ${edificio}
+Aula/Espacio: ${aula}
+Incidencia: ${incidencia}
+Prioridad: ${prioridad}
+Solicitante: ${profe}`
+    );
 
     window.location.href =
-    "mailto:jalmedac@abatoliba.edu?subject=Incidencia&body=" + body;
+        "mailto:jalmedac@abatoliba.edu?subject=Incidencia&body=" + body;
 }
-
 </script>
 
 </body>
