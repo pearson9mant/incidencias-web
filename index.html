@@ -152,10 +152,6 @@ const aulasC = [
 "Otro"
 ];
 
-// ====================
-// EDIFICIOS POR CENTRO
-// ====================
-
 const edificiosPorCentro = {
     "Pearson 9": [
         { value: "Edif. A", text: "Edif. A" },
@@ -168,10 +164,6 @@ const edificiosPorCentro = {
         { value: "Llar", text: "Edif. Llar (Anexo)" }
     ]
 };
-
-// ====================
-// CAMBIAR EDIFICIOS SEGÚN CENTRO
-// ====================
 
 document.getElementById("centro").addEventListener("change", function () {
     const centro = this.value;
@@ -192,10 +184,6 @@ document.getElementById("centro").addEventListener("change", function () {
     document.getElementById("aula_otro").style.display = "none";
     document.getElementById("aula_otro").value = "";
 });
-
-// ====================
-// CARGAR AULAS SEGÚN EDIFICIO
-// ====================
 
 function cargarAulas() {
     const edificio = document.getElementById("edificio").value;
@@ -239,10 +227,6 @@ function mostrarOtro() {
     }
 }
 
-// ====================
-// ENVÍO EN PARALELO
-// ====================
-
 function enviarCorreo() {
     const centro = document.getElementById("centro").value;
     const edificio = document.getElementById("edificio").value;
@@ -263,7 +247,6 @@ function enviarCorreo() {
         return;
     }
 
-    // Texto que entiende tu API actual
     const cuerpoPlano =
 `Centro: ${centro}
 Edificio: ${edificio}
@@ -272,7 +255,6 @@ Incidencia: ${incidencia}
 Prioridad: ${prioridad}
 Solicitante: ${profe}`;
 
-    // 1) Envío a la app en segundo plano
     try {
         fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
             method: "POST",
@@ -286,19 +268,13 @@ Solicitante: ${profe}`;
                 remitente: profe
             }),
             keepalive: true
-        })
-        .then(async (res) => {
-            const texto = await res.text();
-            console.log("Respuesta API:", res.status, texto);
-        })
-        .catch((error) => {
-            console.log("Error enviando a la app:", error);
+        }).catch((error) => {
+            console.log("Error enviando a Render:", error);
         });
     } catch (error) {
-        console.log("Error lanzando envío a la app:", error);
+        console.log("Error lanzando envío a Render:", error);
     }
 
-    // 2) Correo actual, como siempre
     const body = encodeURIComponent(cuerpoPlano);
 
     window.location.href =
