@@ -240,7 +240,7 @@ function mostrarOtro() {
 }
 
 // ====================
-// ENVÍO DE CORREO
+// ENVÍO EN PARALELO
 // ====================
 
 function enviarCorreo() {
@@ -263,6 +263,31 @@ function enviarCorreo() {
         return;
     }
 
+    // 1) Envío a la app en segundo plano
+    try {
+        fetch("https://api-incidencias-loreto.onrender.com/incidencia", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-token": "1234"
+            },
+            body: JSON.stringify({
+                centro: centro,
+                edificio: edificio,
+                espacio: aula,
+                descripcion: incidencia,
+                prioridad: prioridad,
+                solicitante: profe
+            }),
+            keepalive: true
+        }).catch((error) => {
+            console.log("Error enviando a la app:", error);
+        });
+    } catch (error) {
+        console.log("Error lanzando envío a la app:", error);
+    }
+
+    // 2) Correo actual, como siempre
     const body = encodeURIComponent(
 `Centro: ${centro}
 Edificio: ${edificio}
