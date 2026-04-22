@@ -243,7 +243,6 @@ function mostrarOtro() {
 // ENVÍO EN PARALELO
 // ====================
 
-<script>
 function enviarCorreo() {
     const centro = document.getElementById("centro").value;
     const edificio = document.getElementById("edificio").value;
@@ -264,14 +263,43 @@ function enviarCorreo() {
         return;
     }
 
-    const body = encodeURIComponent(
+    // Texto que entiende tu API actual
+    const cuerpoPlano =
 `Centro: ${centro}
 Edificio: ${edificio}
 Aula/Espacio: ${aula}
 Incidencia: ${incidencia}
 Prioridad: ${prioridad}
-Solicitante: ${profe}`
-    );
+Solicitante: ${profe}`;
+
+    // 1) Envío a la app en segundo plano
+    try {
+        fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-webhook-token": "1234"
+            },
+            body: JSON.stringify({
+                asunto: incidencia,
+                body: cuerpoPlano,
+                remitente: profe
+            }),
+            keepalive: true
+        })
+        .then(async (res) => {
+            const texto = await res.text();
+            console.log("Respuesta API:", res.status, texto);
+        })
+        .catch((error) => {
+            console.log("Error enviando a la app:", error);
+        });
+    } catch (error) {
+        console.log("Error lanzando envío a la app:", error);
+    }
+
+    // 2) Correo actual, como siempre
+    const body = encodeURIComponent(cuerpoPlano);
 
     window.location.href =
         "mailto:jalmedac@abatoliba.edu?subject=Incidencia&body=" + body;
