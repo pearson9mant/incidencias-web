@@ -227,6 +227,12 @@ function abrirCorreo(cuerpoPlano) {
         "mailto:jalmedac@abatoliba.edu?subject=Incidencia&body=" + encodeURIComponent(cuerpoPlano);
 }
 
+function abrirCorreoConEspera(cuerpoPlano) {
+    setTimeout(() => {
+        abrirCorreo(cuerpoPlano);
+    }, 800);
+}
+
 function enviarCorreo() {
     const centro = document.getElementById("centro").value;
     const edificio = document.getElementById("edificio").value;
@@ -268,11 +274,11 @@ Solicitante: ${profe}`;
         })
     })
     .then(() => {
-        abrirCorreo(cuerpoPlano);
+        abrirCorreoConEspera(cuerpoPlano);
     })
     .catch((error) => {
         console.log("Error enviando a Render:", error);
-        abrirCorreo(cuerpoPlano);
+        abrirCorreoConEspera(cuerpoPlano);
     });
 }
 </script>
