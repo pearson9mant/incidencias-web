@@ -260,7 +260,7 @@ Aula/Espacio: ${aula}
 Incidencia: ${incidencia}
 Prioridad: ${prioridad}
 Solicitante: ${profe}`;
-try {
+
     fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
         method: "POST",
         headers: {
@@ -271,20 +271,15 @@ try {
             asunto: incidencia,
             body: cuerpoPlano,
             remitente: profe
-        }),
-        keepalive: true
-    }).catch((error) => {
-        console.log("Error enviando a Render:", error);
+        })
+    })
+    .then((res) => res.json())
+    .then((data) => {
+        console.log("API OK:", data);
+        abrirCorreo(cuerpoPlano);
+    })
+    .catch((error) => {
+        console.log("ERROR API:", error);
+        abrirCorreo(cuerpoPlano);
     });
-} catch (error) {
-    console.log("Error lanzando envío a Render:", error);
 }
-
-setTimeout(() => {
-    abrirCorreo(cuerpoPlano);
-}, 1200);
-}
-</script>
-
-</body>
-</html>
