@@ -243,27 +243,35 @@ Incidencia: ${incidencia}
 Prioridad: ${prioridad}
 Solicitante: ${profe}`;
 
-    fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-webhook-token": "1234"
-        },
-        body: JSON.stringify({
-            asunto: incidencia,
-            body: cuerpoPlano,
-            remitente: profe
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        console.log("API OK:", data);
-        abrirCorreo(cuerpoPlano);
-    })
-    .catch(error => {
-        console.log("ERROR API:", error);
-        abrirCorreo(cuerpoPlano);
+    const payload = JSON.stringify({
+        asunto: incidencia,
+        body: cuerpoPlano,
+        remitente: profe
     });
+
+    const urlBeacon = "https://api-incidencias-loreto.onrender.com/incidencia-beacon?token=1234";
+
+    try {
+        if (navigator.sendBeacon) {
+            const blob = new Blob([payload], { type: "text/plain" });
+            navigator.sendBeacon(urlBeacon, blob);
+        } else {
+            fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-webhook-token": "1234"
+                },
+                body: payload
+            }).catch(error => {
+                console.log("ERROR API:", error);
+            });
+        }
+    } catch (error) {
+        console.log("ERROR envío app:", error);
+    }
+
+    abrirCorreo(cuerpoPlano);
 }
 </script>
 
