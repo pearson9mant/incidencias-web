@@ -243,35 +243,25 @@ Incidencia: ${incidencia}
 Prioridad: ${prioridad}
 Solicitante: ${profe}`;
 
-    const payload = JSON.stringify({
-        asunto: incidencia,
-        body: cuerpoPlano,
-        remitente: profe
+    const peticion = fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-webhook-token": "1234"
+        },
+        body: JSON.stringify({
+            asunto: incidencia,
+            body: cuerpoPlano,
+            remitente: profe
+        })
     });
 
-    const urlBeacon = "https://api-incidencias-loreto.onrender.com/incidencia-beacon?token=1234";
+    const esperaMaxima = new Promise(resolve => setTimeout(resolve, 2000));
 
-    try {
-        if (navigator.sendBeacon) {
-            const blob = new Blob([payload], { type: "text/plain" });
-            navigator.sendBeacon(urlBeacon, blob);
-        } else {
-            fetch("https://api-incidencias-loreto.onrender.com/api/incidencias", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-webhook-token": "1234"
-                },
-                body: payload
-            }).catch(error => {
-                console.log("ERROR API:", error);
-            });
-        }
-    } catch (error) {
-        console.log("ERROR envío app:", error);
-    }
-
-    abrirCorreo(cuerpoPlano);
+    Promise.race([peticion, esperaMaxima])
+        .finally(() => {
+            abrirCorreo(cuerpoPlano);
+        });
 }
 </script>
 
