@@ -3,60 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Formulario Incidencias-Abat Oliba</title>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 20px;
-        background: #f7f7f7;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    h2 {
-        text-align: center;
-        font-size: 26px;
-        margin-bottom: 25px;
-    }
-
-    label {
-        font-weight: bold;
-        display: block;
-        margin-top: 15px;
-        font-size: 18px;
-    }
-
-    select, textarea, input {
-        width: 100%;
-        padding: 15px;
-        margin-top: 8px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        font-size: 18px;
-        background: white;
-        box-sizing: border-box;
-    }
-
-    button {
-        width: 100%;
-        padding: 20px;
-        background-color: #0077ff;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        font-size: 22px;
-        font-weight: bold;
-        margin-top: 30px;
-        cursor: pointer;
-    }
-
-    button:active {
-        background-color: #0059bb;
-    }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #f7f7f7;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+h2 {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    font-size: 18px;
+}
+select, textarea, input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 18px;
+    background: white;
+    box-sizing: border-box;
+}
+button {
+    width: 100%;
+    padding: 20px;
+    background-color: #0077ff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 30px;
+    cursor: pointer;
+}
+button:active {
+    background-color: #0059bb;
+}
 </style>
 </head>
 
@@ -100,10 +94,6 @@
 <button type="button" onclick="enviarCorreo()">ENVIAR</button>
 
 <script>
-// ====================
-// LISTAS DE AULAS
-// ====================
-
 const aulasInfantil = [
 "I3A","I3B","I3C","I4A","I4B","I4C","I5A","I5B","I5C",
 "1A","1B","1C","2A","2B","2C","3A","3B","3C","4A","4B","4C",
@@ -153,7 +143,6 @@ const edificiosPorCentro = {
         { value: "Edif. B", text: "Edif. B" },
         { value: "Edif. C", text: "Edif. C" }
     ],
-
     "Pearson 22": [
         { value: "Infantil", text: "Edif. Infantil/Primaria" },
         { value: "Llar", text: "Edif. Llar (Anexo)" }
@@ -190,7 +179,6 @@ function cargarAulas() {
 
     if (edificio === "Infantil") lista = aulasInfantil;
     if (edificio === "Llar") lista = aulasLlar;
-
     if (edificio === "Edif. A") lista = aulasA;
     if (edificio === "Edif. B") lista = aulasB;
     if (edificio === "Edif. C") lista = aulasC;
@@ -225,12 +213,6 @@ function mostrarOtro() {
 function abrirCorreo(cuerpoPlano) {
     window.location.href =
         "mailto:jalmedac@abatoliba.edu?subject=Incidencia&body=" + encodeURIComponent(cuerpoPlano);
-}
-
-function abrirCorreoConEspera(cuerpoPlano) {
-    setTimeout(() => {
-        abrirCorreo(cuerpoPlano);
-    }, 800);
 }
 
 function enviarCorreo() {
@@ -273,12 +255,12 @@ Solicitante: ${profe}`;
             remitente: profe
         })
     })
-    .then((res) => res.json())
-    .then((data) => {
+    .then(res => res.json())
+    .then(data => {
         console.log("API OK:", data);
         abrirCorreo(cuerpoPlano);
     })
-    .catch((error) => {
+    .catch(error => {
         console.log("ERROR API:", error);
         abrirCorreo(cuerpoPlano);
     });
